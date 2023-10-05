@@ -2,11 +2,16 @@ var Express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var mysql = require('mysql');
+var fileUpload = require('express-fileupload');
+var fs = require('fs');
 
 var app = Express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(fileUpload());
+app.use('/Photos', Express.static(__dirname + '/Photos'));
+
 
 var connection = mysql.createConnection({
     host: 'localhost',
@@ -170,4 +175,18 @@ app.delete('/api/employee/:id', (req, res) => {
         }
         res.json('Datos correctamente eliminados');
     })
+})
+
+// Photos
+
+app.post('/api/employee/savefile', (req, res) => {
+
+    fs.writeFile("./Photos/" + req.files.file.name,
+        req.files.file.data, function (err) {
+            if (err) {
+                console.log('Error al insertar la imagen:' + err.stack);
+            }
+
+            res.json(req.files.file.data)
+        })
 })
