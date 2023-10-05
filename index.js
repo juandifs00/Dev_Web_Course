@@ -29,6 +29,8 @@ app.get('/', (req, res) => {
     res.send('Hello World')
 })
 
+// DEPARTAMENTO
+
 app.get('/api/departament', (req, res) => {
 
     var query = `SELECT * from departament`;
@@ -73,5 +75,99 @@ app.put('/api/departament', (req, res) => {
             res.send('Error al actualizar los datos:' + err.stack);
         }
         res.json('Datos correctamente actualizados');
+    })
+})
+
+app.delete('/api/departament/:id', (req, res) => {
+
+    var query = `delete from departament
+                where DepartamentId = ?`;
+
+    var values = [
+        parseInt(req.params.id)
+    ];
+
+    connection.query(query, values, function (err, rows, fields) {
+        if (err) {
+            res.send('Error al eliminar los datos:' + err.stack);
+        }
+        res.json('Datos correctamente eliminados');
+    })
+})
+
+// EMPLEADOS
+
+app.get('/api/employee', (req, res) => {
+
+    var query = `SELECT * from employee`;
+    connection.query(query, function (err, rows, fields) {
+        if (err) {
+            res.send('Error de en la consulta SQL:' + err.stack);
+        }
+        res.send(rows);
+    })
+})
+
+app.post('/api/employee', (req, res) => {
+
+    var query = `insert into employee
+                (EmployeeName, Departament, DateOfJoinig, PhotoFileName)
+                VALUE (?,?,?,?)`;
+
+    var values = [
+        req.body['EmployeeName'],
+        req.body['Departament'],
+        req.body['DateOfJoinig'],
+        req.body['PhotoFileName']
+    ];
+
+    connection.query(query, values, function (err, rows, fields) {
+        if (err) {
+            res.send('Error al insertar los datos:' + err.stack);
+        }
+        res.json('Datos correctamente agregados');
+    })
+})
+
+app.put('/api/employee', (req, res) => {
+
+    var query = `update employee
+                set EmployeeName = ?,
+                Departament = ?,
+                DateOfJoinig = ?,
+                PhotoFileName = ?
+                where EmployeeId = ?`;
+
+    var values = [
+        req.body['EmployeeName'],
+        req.body['Departament'],
+        req.body['DateOfJoinig'],
+        req.body['PhotoFileName'],
+        req.body['EmployeeId']
+    ];
+
+    connection.query(query, values, function (err, rows, fields) {
+        if (err) {
+            res.send('Error al actualizar los datos:' + err.stack);
+        }
+        res.json('Datos correctamente actualizados');
+    });
+
+})
+
+app.delete('/api/employee/:id', (req, res) => {
+
+    var query = `delete from employee
+                where EmployeeId = ?`;
+
+    var values = [
+        parseInt(req.params.id)
+    ];
+
+    connection.query(query, values, function (err, rows, fields) {
+        if (err) {
+            res.send('Error al eliminar los datos:' + err.stack);
+        }
+        res.json('Datos correctamente eliminados');
     })
 })
